@@ -108,7 +108,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths: 
-            - nd9991-c3-hello-world-exercise-solution/.circleci/inventory.txt
+            - .circleci/inventory.txt
             
       # Fail the job intentionally to simulate an error.
       # Uncomment the line below if you want to fail the current step
@@ -251,11 +251,11 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       # - welcome/run
-      - print_greetings
-      - upload_file
-      - download_file:
-         requires:
-          - upload_file
+      #- print_greetings
+      #- upload_file
+      #- download_file:
+      #   requires:
+      #    - upload_file
       - create_infrastructure
       - configure_infrastructure:
           requires:
