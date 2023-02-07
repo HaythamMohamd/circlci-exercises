@@ -77,7 +77,15 @@ jobs:
               --template-file template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-east-1
-            aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+      - run:
+          name: add ec2 ip at the inventory
+          command: echo "[ubuntu]" > inventory.txt ; aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
+          
+      - persist_to_workspace:
+          root: ~/
+          paths: 
+            - inventory.txt
+            
       # Fail the job intentionally to simulate an error.
       # Uncomment the line below if you want to fail the current step
       # - run: return 1
@@ -97,10 +105,13 @@ jobs:
           command: |
             # install the dependencies needed for your playbook
             apk add --update ansible 
-      - run:
-          name: Configure server
-          command: |
-            ansible-playbook -i inventory.txt main4.yml
+      - attach_workspace:
+          at: ~/
+      - run: ansible-playbook -i inventory.txt main4.yml
+      #- run:
+      #    name: Configure server
+      #    command: |
+      #      ansible-playbook -i inventory.txt main4.yml
 
   # Exercise: Smoke Testing
   smoke_test:
