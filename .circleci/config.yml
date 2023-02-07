@@ -216,10 +216,10 @@ workflows:
     jobs:
       # - welcome/run
       - print_greetings
-      #- upload_file
-      #- download_file:
-       #   requires:
-        #    - upload_file
+      - upload_file
+      - download_file:
+         requires:
+          - upload_file
       #- create_infrastructure
       #- configure_infrastructure
       #- create_and_deploy_front_end
