@@ -98,15 +98,17 @@ jobs:
               --template-file template.yml \
               --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
               --region us-east-1
-      - run: echo "[ubuntu]" > inventory.txt
       - run:
-          name: add ec2 ip at the inventory
-          command:  aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
-         
+          name: Add back-end ip to ansible inventory
+          command: |
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text \
+            
+            echo $BACKEND_PUBLIC_IP >> .circleci/ansible/inventory.txt
+            cat .circleci/inventory.txt        
       - persist_to_workspace:
           root: ~/
           paths: 
-            - inventory.txt
+            - nd9991-c3-hello-world-exercise-solution/.circleci/inventory.txt
             
       # Fail the job intentionally to simulate an error.
       # Uncomment the line below if you want to fail the current step
